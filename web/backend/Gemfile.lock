@@ -1,0 +1,45 @@
+GEM
+  remote: https://gems.ruby-china.com/
+  specs:
+    backports (3.17.2)
+    ffi (1.13.1-x64-mingw32)
+    multi_json (1.14.1)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    nio4r (2.5.2)
+    puma (4.3.5)
+      nio4r (~> 2.0)
+    rack (2.2.3)
+    rack-protection (2.0.8.1)
+      rack
+    ruby2_keywords (0.0.2)
+    rubyserial (0.6.0)
+      ffi (~> 1.9, >= 1.9.3)
+    sinatra (2.0.8.1)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.8.1)
+      tilt (~> 2.0)
+    sinatra-contrib (2.0.8.1)
+      backports (>= 2.8.2)
+      multi_json
+      mustermann (~> 1.0)
+      rack-protection (= 2.0.8.1)
+      sinatra (= 2.0.8.1)
+      tilt (~> 2.0)
+    tilt (2.0.10)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  puma (~> 4.3, >= 4.3.5)
+  rubyserial (~> 0.6.0)
+  sinatra (~> 2.0, >= 2.0.8.1)
+  sinatra-contrib (~> 2.0, >= 2.0.8.1)
+
+RUBY VERSION
+   ruby 2.6.6p146
+
+BUNDLED WITH
+   2.1.4
