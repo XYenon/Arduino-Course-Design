@@ -1,0 +1,7 @@
+html {
+  background-color: rgb(244, 244, 245);
+}
+
+.el-card {
+  border-radius: 15px !important;
+}

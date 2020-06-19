@@ -8,3 +8,4 @@ gem 'puma', '~> 4.3', '>= 4.3.5'
 gem 'rubyserial', '~> 0.6.0'
 gem 'sinatra', '~> 2.0', '>= 2.0.8.1'
 gem 'sinatra-contrib', '~> 2.0', '>= 2.0.8.1'
+gem 'wdm', '>= 0.1.0' if Gem.win_platform?

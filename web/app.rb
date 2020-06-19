@@ -9,6 +9,10 @@ set :server, %w[thin puma webrick]
 
 sp_handler = SerialPortHandler.new('COM2')
 
+get '/' do
+  erb :index
+end
+
 namespace '/api' do
   before do
     content_type :json

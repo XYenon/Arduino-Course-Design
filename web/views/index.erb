@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <%# <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js" integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68=" crossorigin="anonymous"></script> %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/theme-chalk/index.css" integrity="sha256-bHcFRzLiKH6f01ebzmMYw8hJlYauysooMBDoZEKOrhQ=" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/index.js" integrity="sha256-m+uYo63FCIIAqY7qmxzXewAzPvoXoHUTmildiyYWMsc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+    <title>Arduino</title>
+  </head>
+  <body>
+    <noscript>
+      <strong>
+        很抱歉，如果不启用 JavaScript，无法正常工作。请启用它以继续。
+      </strong>
+    </noscript>
+    <div id="app">
+      <el-row type="flex" justify="center">
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8">
+          <el-card shadow="hover">
+            <el-row>
+              <el-col>
+                刷新间隔
+                <el-input-number v-model="delay" :step="1" step-strictly @change="setRefreshInterval"></el-input-number>
+                <el-button @click="refresh">刷新</el-button>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col>
+                温度 {{ dht.temperature }} 湿度 {{ dht.humidity }}
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col>
+                提醒距离
+                <el-input-number v-model="noticeDistance" :step="1" step-strictly></el-input-number>
+                当前距离 {{ distance }}
+                <el-button @click="warning">警报</el-button>
+              </el-col>
+            </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <script src="/js/index.js"></script>
+  </body>
+</html>
