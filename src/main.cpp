@@ -22,6 +22,37 @@ void loop()
   // delay(1000);
 }
 
+template <typename T>
+void write_error(const T &err)
+{
+  Serial.print("err ");
+  Serial.print(err);
+  Serial.println("|");
+}
+
+template <typename T>
+void write_params(const T &t)
+{
+  Serial.print(" ");
+  Serial.print(t);
+}
+
+template <typename T, typename... Params>
+void write_params(const T &t, const Params &... params)
+{
+  Serial.print(" ");
+  Serial.print(t);
+  write_params(params...);
+}
+
+template <typename Command, typename... Params>
+void write_command(const Command &command, const Params &... params)
+{
+  Serial.print(command);
+  write_params(params...);
+  Serial.println("|");
+}
+
 void read_dht11()
 {
   byte temperature = 0;
@@ -29,17 +60,10 @@ void read_dht11()
   int err = SimpleDHTErrSuccess;
   if ((err = dht11.read(&temperature, &humidity, NULL)) != SimpleDHTErrSuccess)
   {
-    Serial.print("err ");
-    Serial.print(err);
-    Serial.println("|");
+    write_error("DHT11 " + String(err));
     return;
   }
-
-  Serial.print("DHT ");
-  Serial.print((int)temperature);
-  Serial.print(" ");
-  Serial.print((int)humidity);
-  Serial.println("|");
+  write_command("DHT", (int)temperature, (int)humidity);
 }
 
 bool read_key(int pin_key)
@@ -69,9 +93,7 @@ String read_serial()
   }
   if (!com_data.endsWith("|"))
   {
-    Serial.print("err ");
-    Serial.print("broken stream");
-    Serial.println("|");
+    write_error("broken stream");
     return "";
   }
   com_data.trim();
@@ -94,6 +116,10 @@ void exec_command()
   else if (com_data == "warning")
   {
     // TODO warning
+  }
+  else
+  {
+    write_error("invalid command");
   }
 }
 
