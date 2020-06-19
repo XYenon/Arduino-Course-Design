@@ -1,41 +1,113 @@
 #include <Arduino.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <DHT.h>
+#include <SimpleDHT.h>
 
-#define DHTPIN 2     // Digital pin connected to the DHT sensor
-#define DHTTYPE DHT11   // DHT 11
+const int PIN_DHT11 = 2;
+const int PIN_ALERT_KEY = 8;
+SimpleDHT11 dht11(PIN_DHT11);
 
-DHT dht(DHTPIN, DHTTYPE);
+void exec_command();
+void read_alert_key();
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
-  Serial.println(F("DHT11 test!"));
-
-  dht.begin();
+  pinMode(PIN_ALERT_KEY, INPUT_PULLUP);
 }
 
-void loop() {
+void loop()
+{
+  read_alert_key();
+  exec_command();
 
-  delay(1000);  // DHT11每隔1s更新一次数据
+  // delay(1000);
+}
 
-  // 读取温湿度
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-
-  // 读取失败处理
-  if (isnan(h) || isnan(t)) {
-    Serial.println(F("Failed to read from DHT sensor!"));
+void read_dht11()
+{
+  byte temperature = 0;
+  byte humidity = 0;
+  int err = SimpleDHTErrSuccess;
+  if ((err = dht11.read(&temperature, &humidity, NULL)) != SimpleDHTErrSuccess)
+  {
+    Serial.print("err ");
+    Serial.print(err);
+    Serial.println("|");
     return;
   }
 
-  // 计算热指数（利用摄氏温度）
-  float hic = dht.computeHeatIndex(t, h, false);
+  Serial.print("DHT ");
+  Serial.print((int)temperature);
+  Serial.print(" ");
+  Serial.print((int)humidity);
+  Serial.println("|");
+}
 
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
-  Serial.print(F(" Heat index: "));
-  Serial.println(hic);
+bool read_key(int pin_key)
+{
+  if (digitalRead(pin_key) == 0)
+  {
+    delay(10);
+    if (digitalRead(pin_key) == 0)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+String read_serial()
+{
+  String com_data = "";
+  while (Serial.available() > 0 && !com_data.endsWith("|"))
+  {
+    com_data += char(Serial.read());
+    delay(2);
+  }
+  if (com_data.length() <= 0)
+  {
+    return com_data;
+  }
+  if (!com_data.endsWith("|"))
+  {
+    Serial.print("err ");
+    Serial.print("broken stream");
+    Serial.println("|");
+    return "";
+  }
+  com_data.trim();
+  com_data.remove(com_data.length() - 1);
+  com_data.trim();
+  return com_data;
+}
+
+void exec_command()
+{
+  String com_data = read_serial();
+  if (com_data.length() <= 0)
+  {
+    return;
+  }
+  if (com_data == "DHT")
+  {
+    read_dht11();
+  }
+  else if (com_data == "warning")
+  {
+    // TODO warning
+  }
+}
+
+void read_alert_key()
+{
+  bool key_down = false;
+  if (read_key(PIN_ALERT_KEY))
+  {
+    key_down = true;
+    // TODO alert
+    while (key_down)
+    {
+      delay(100);
+    }
+    key_down = false;
+  }
 }
