@@ -4,6 +4,9 @@
 const int PIN_DHT11 = 2;
 const int PIN_ALERT_KEY = 8;
 const int PIN_SOUNDER = 9;
+
+const int PIN_GP2D12 = 0;
+
 SimpleDHT11 dht11(PIN_DHT11);
 
 void exec_command();
@@ -27,6 +30,13 @@ void loop()
 void alert()
 {
   analogWrite(PIN_SOUNDER, 64);
+  delay(1000);
+  analogWrite(PIN_SOUNDER, 0);
+}
+
+void warning()
+{
+  analogWrite(PIN_SOUNDER, 128);
   delay(1000);
   analogWrite(PIN_SOUNDER, 0);
 }
@@ -79,7 +89,7 @@ void read_dht11()
     write_error("DHT11 " + String(err));
     return;
   }
-  write_command("DHT", (int)temperature, (int)humidity);
+  write_command("DHT", (int)temperature, "C", (int)humidity, "%");
 }
 
 bool read_key(int pin_key)
@@ -118,6 +128,18 @@ String read_serial()
   return com_data;
 }
 
+void read_distance()
+{
+  int val = analogRead(PIN_GP2D12);
+  float distance = 2547.8 / ((float)val * 0.49 - 10.41) - 0.42;
+  if (distance > 80 || distance < 10)
+  {
+    write_error("GP2D12 over range");
+  }
+  distance = int(distance * 10) / 10.0;
+  write_command("distance", distance, "cm");
+}
+
 void exec_command()
 {
   String com_data = read_serial();
@@ -131,7 +153,11 @@ void exec_command()
   }
   else if (com_data == "warning")
   {
-    // TODO warning
+    warning();
+  }
+  else if (com_data == "distance")
+  {
+    read_distance();
   }
   else
   {
