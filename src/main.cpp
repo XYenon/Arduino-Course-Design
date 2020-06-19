@@ -3,6 +3,7 @@
 
 const int PIN_DHT11 = 2;
 const int PIN_ALERT_KEY = 8;
+const int PIN_SOUNDER = 9;
 SimpleDHT11 dht11(PIN_DHT11);
 
 void exec_command();
@@ -12,6 +13,7 @@ void setup()
 {
   Serial.begin(9600);
   pinMode(PIN_ALERT_KEY, INPUT_PULLUP);
+  pinMode(PIN_SOUNDER, OUTPUT);
 }
 
 void loop()
@@ -20,6 +22,13 @@ void loop()
   exec_command();
 
   // delay(1000);
+}
+
+void alert()
+{
+  analogWrite(PIN_SOUNDER, 64);
+  delay(1000);
+  analogWrite(PIN_SOUNDER, 0);
 }
 
 template <typename T>
@@ -43,6 +52,13 @@ void write_params(const T &t, const Params &... params)
   Serial.print(" ");
   Serial.print(t);
   write_params(params...);
+}
+
+template <typename Command>
+void write_command(const Command &command)
+{
+  Serial.print(command);
+  Serial.println("|");
 }
 
 template <typename Command, typename... Params>
@@ -125,15 +141,13 @@ void exec_command()
 
 void read_alert_key()
 {
-  bool key_down = false;
   if (read_key(PIN_ALERT_KEY))
   {
-    key_down = true;
-    // TODO alert
-    while (key_down)
+    write_command("alert");
+    alert();
+    while (read_key(PIN_ALERT_KEY))
     {
       delay(100);
     }
-    key_down = false;
   }
 }
