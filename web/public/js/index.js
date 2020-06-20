@@ -3,11 +3,38 @@ axios.defaults.baseURL = "/api/";
 const app = new Vue({
   el: "#app",
   data: {
-    delay: 30,
+    delay: 3,
     refreshInterval: null,
     dht: { temperature: null, humidity: null },
     noticeDistance: 18,
     distance: null,
+    alert: false,
+    alertTimeout: null,
+  },
+  computed: {
+    distanceToClose: function () {
+      return this.distance <= this.noticeDistance;
+    },
+  },
+  watch: {
+    distanceToClose: function (newDistanceToClose, oldDistanceToClose) {
+      if (!oldDistanceToClose && newDistanceToClose) {
+        this.$notify.warning({
+          title: "警告",
+          message: "可能有人靠近",
+          duration: 0,
+        });
+      }
+    },
+    alert: function (newAlert, oldAlert) {
+      if (!oldAlert && newAlert) {
+        this.$notify.info({
+          title: "提示",
+          message: "您的门铃响了",
+          duration: 2000,
+        });
+      }
+    },
   },
   created: function () {
     this.refresh();
@@ -25,12 +52,8 @@ const app = new Vue({
       );
     },
     refresh: function () {
-      this.postCommand("DHT");
-      this.postCommand("distance");
+      this.postCommands(["DHT", "distance"]);
       this.getCommands();
-    },
-    postDht: function () {
-      this.postCommand("DHT");
     },
     warning: function () {
       this.postCommand("warning");
@@ -46,7 +69,10 @@ const app = new Vue({
         });
     },
     postCommand: function (command) {
-      axios.post("/write", { command: command }).catch((err) => {
+      this.postCommands([command]);
+    },
+    postCommands: function (commands) {
+      axios.post("/write", { commands: commands }).catch((err) => {
         console.log(err);
       });
     },
@@ -58,6 +84,12 @@ const app = new Vue({
           this.parseDht(data);
         } else if (command === "distance") {
           this.parseDistance(data);
+        } else if (command === "alert") {
+          window.clearTimeout(this.alertTimeout);
+          this.alert = true;
+          this.alertTimeout = window.setTimeout(() => {
+            this.alert = false;
+          }, 2000);
         }
       });
     },
@@ -68,12 +100,6 @@ const app = new Vue({
     parseDistance: function (data) {
       const distance = parseFloat(data[0]);
       this.distance = distance;
-      if (distance < this.noticeDistance) {
-        this.$notify.warning({
-          title: "警告",
-          message: "可能有人靠近",
-        });
-      }
     },
   },
 });

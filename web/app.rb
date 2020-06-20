@@ -27,8 +27,10 @@ namespace '/api' do
   end
 
   post '/write' do
-    str = @data['command']
-    sp_handler.write(str)
+    commands = @data['commands']
+    commands.each do |command|
+      sp_handler.write(command)
+    end
     return
   end
 
