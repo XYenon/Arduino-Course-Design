@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <MsTimer2.h>
 #include <SimpleDHT.h>
 
 const int PIN_DHT11 = 2;
@@ -23,22 +24,26 @@ void loop()
 {
   read_alert_key();
   exec_command();
+}
 
-  // delay(1000);
+void stop_sounder()
+{
+  analogWrite(PIN_SOUNDER, 0);
+  MsTimer2::stop();
 }
 
 void alert()
 {
   analogWrite(PIN_SOUNDER, 64);
-  delay(1000);
-  analogWrite(PIN_SOUNDER, 0);
+  MsTimer2::set(1000, stop_sounder);
+  MsTimer2::start();
 }
 
 void warning()
 {
   analogWrite(PIN_SOUNDER, 128);
-  delay(1000);
-  analogWrite(PIN_SOUNDER, 0);
+  MsTimer2::set(3000, stop_sounder);
+  MsTimer2::start();
 }
 
 template <typename T>

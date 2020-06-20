@@ -17,6 +17,12 @@ const app = new Vue({
     },
   },
   watch: {
+    delay: function (newDelay) {
+      window.localStorage.setItem("delay", newDelay);
+    },
+    noticeDistance: function (newNoticeDistance) {
+      window.localStorage.setItem("noticeDistance", newNoticeDistance);
+    },
     distanceToClose: function (newDistanceToClose, oldDistanceToClose) {
       if (!oldDistanceToClose && newDistanceToClose) {
         this.$notify.warning({
@@ -37,6 +43,14 @@ const app = new Vue({
     },
   },
   created: function () {
+    const delay = window.localStorage.getItem("delay");
+    const noticeDistance = window.localStorage.getItem("noticeDistance");
+    if (delay) {
+      this.delay = delay;
+    }
+    if (noticeDistance) {
+      this.noticeDistance = noticeDistance;
+    }
     this.refresh();
     this.setRefreshInterval();
   },
