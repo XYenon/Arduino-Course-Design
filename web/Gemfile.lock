@@ -1,34 +1,32 @@
 GEM
   remote: https://gems.ruby-china.com/
   specs:
-    backports (3.17.2)
     ffi (1.13.1)
     ffi (1.13.1-x64-mingw32)
     multi_json (1.14.1)
-    mustermann (1.1.1)
+    mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.8)
     puma (4.3.12)
       nio4r (~> 2.0)
-    rack (2.2.3)
-    rack-protection (2.0.8.1)
+    rack (2.2.4)
+    rack-protection (2.2.3)
       rack
-    ruby2_keywords (0.0.2)
+    ruby2_keywords (0.0.5)
     rubyserial (0.6.0)
       ffi (~> 1.9, >= 1.9.3)
-    sinatra (2.0.8.1)
-      mustermann (~> 1.0)
-      rack (~> 2.0)
-      rack-protection (= 2.0.8.1)
+    sinatra (2.2.3)
+      mustermann (~> 2.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.3)
       tilt (~> 2.0)
-    sinatra-contrib (2.0.8.1)
-      backports (>= 2.8.2)
+    sinatra-contrib (2.2.3)
       multi_json
-      mustermann (~> 1.0)
-      rack-protection (= 2.0.8.1)
-      sinatra (= 2.0.8.1)
+      mustermann (~> 2.0)
+      rack-protection (= 2.2.3)
+      sinatra (= 2.2.3)
       tilt (~> 2.0)
-    tilt (2.0.10)
+    tilt (2.0.11)
 
 PLATFORMS
   x64-mingw32
@@ -37,7 +35,7 @@ PLATFORMS
 DEPENDENCIES
   puma (~> 4.3)
   rubyserial (~> 0.6.0)
-  sinatra (~> 2.0, >= 2.0.8.1)
+  sinatra (~> 2.2)
   sinatra-contrib (~> 2.0, >= 2.0.8.1)
 
 RUBY VERSION
